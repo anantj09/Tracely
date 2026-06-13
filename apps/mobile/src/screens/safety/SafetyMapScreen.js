@@ -1,28 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View, Text, StyleSheet, TouchableOpacity, ActivityIndicator,
-  SafeAreaView, Dimensions, ScrollView, FlatList
+  SafeAreaView, Dimensions, ScrollView
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft } from 'lucide-react-native';
+import { WebView } from 'react-native-webview';
 import { getPublicMapEvents } from './services/safetyService';
-import HazardMarker from './components/HazardMarker';
-
 
 const { width } = Dimensions.get('window');
-
-// Defensive react-native-maps import
-let MapView, Marker, Callout;
-try {
-  const Maps = require('react-native-maps');
-  MapView = Maps.default;
-  Marker = Maps.Marker;
-  Callout = Maps.Callout;
-} catch (_e) {
-  MapView = null;
-  Marker = null;
-  Callout = null;
-}
 
 // Defensive Location import
 let Location;
@@ -39,12 +25,116 @@ const defaultRegion = {
   longitudeDelta: 12.0,
 };
 
+const LEAFLET_HTML = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no,width=device-width" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    body, html, #map { margin: 0; padding: 0; height: 100%; width: 100%; background: #FAFAFA; }
+    .leaflet-control-attribution { display: none; }
+    .custom-popup .leaflet-popup-content-wrapper {
+      background: #ffffff;
+      color: #111111;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      border-radius: 8px;
+      padding: 4px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <script>
+    var map = L.map('map', { zoomControl: false }).setView([28.6419, 77.2194], 12);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18
+    }).addTo(map);
+
+    var layersGroup = L.layerGroup().addTo(map);
+
+    function centerMap(lat, lng) {
+      map.setView([lat, lng], 14);
+    }
+
+    function getEventConfig(type) {
+      switch (type) {
+        case 'SOS':
+          return { color: '#CC0000', icon: '🚨', label: 'SOS Alert' };
+        case 'COMPARTMENT_VIOLATION':
+          return { color: '#E8621A', icon: '👤', label: 'Compartment Violation' };
+        case 'HAZARD_REPORT':
+          return { color: '#F5A623', icon: '⚠️', label: 'Hazard' };
+        default:
+          return { color: '#7B8A9E', icon: '📌', label: 'Incident' };
+      }
+    }
+
+    function loadEvents(events) {
+      try {
+        layersGroup.clearLayers();
+        if (events && events.length > 0) {
+          var bounds = [];
+          events.forEach(function(event) {
+            if (!event.lat || !event.lng) return;
+            var lat = parseFloat(event.lat);
+            var lng = parseFloat(event.lng);
+            var config = getEventConfig(event.event_type);
+            
+            var iconHtml = '<div style="background-color: ' + config.color + '; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3); font-size: 14px;">' + config.icon + '</div>';
+            var customIcon = L.divIcon({
+              html: iconHtml,
+              className: 'custom-div-icon',
+              iconSize: [30, 30],
+              iconAnchor: [15, 15]
+            });
+
+            var formattedTime = '';
+            if (event.created_at) {
+              var date = new Date(event.created_at);
+              formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+
+            var popupContent = '<div style="font-family: sans-serif; font-size: 13px; line-height: 1.4;">' +
+              '<b style="color: #1A3557; font-size: 14px;">' + config.label + '</b><br/>' +
+              '<span style="color: #E8621A; font-weight: 600;">' + event.alert_subtype.replace(/_/g, ' ') + '</span><br/>' +
+              (event.train_number ? 'Train: ' + event.train_number + '<br/>' : '') +
+              '<span style="color: #7B8A9E; font-size: 11px;">' + formattedTime + '</span>' +
+              '</div>';
+
+            var marker = L.marker([lat, lng], { icon: customIcon }).addTo(layersGroup);
+            marker.bindPopup(popupContent, { className: 'custom-popup' });
+            
+            bounds.push([lat, lng]);
+          });
+
+          if (bounds.length > 0) {
+            map.fitBounds(bounds, { padding: [40, 40] });
+          }
+        }
+      } catch (err) {
+        // Silent error
+      }
+    }
+
+    window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'READY' }));
+  </script>
+</body>
+</html>
+`;
+
 export default function SafetyMapScreen() {
   const navigation = useNavigation();
   const [region, setRegion] = useState(defaultRegion);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedFilter, setSelectedFilter] = useState('ALL'); // ALL, SOS, COMPARTMENT, HAZARD
+
+  const webViewRef = useRef(null);
+  const [isMapReady, setIsMapReady] = useState(false);
 
   useEffect(() => {
     let active = true;
@@ -54,12 +144,18 @@ export default function SafetyMapScreen() {
           const { status } = await Location.requestForegroundPermissionsAsync();
           if (status === 'granted' && active) {
             const loc = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
+            const lat = loc.coords.latitude;
+            const lng = loc.coords.longitude;
             setRegion({
-              latitude: loc.coords.latitude,
-              longitude: loc.coords.longitude,
+              latitude: lat,
+              longitude: lng,
               latitudeDelta: 0.15,
               longitudeDelta: 0.15,
             });
+            if (isMapReady) {
+              const js = `centerMap(${lat}, ${lng}); true;`;
+              webViewRef.current?.injectJavaScript(js);
+            }
           }
         }
       } catch (err) {
@@ -68,7 +164,7 @@ export default function SafetyMapScreen() {
     };
     getCoordinates();
     return () => { active = false; };
-  }, []);
+  }, [isMapReady]);
 
   useEffect(() => {
     let active = true;
@@ -99,16 +195,30 @@ export default function SafetyMapScreen() {
     return () => { active = false; };
   }, [selectedFilter]);
 
-  const getEventMarkerConfig = (type) => {
-    switch (type) {
-      case 'SOS':
-        return { color: '#CC0000', icon: '🚨', label: 'SOS Alert' };
-      case 'COMPARTMENT_VIOLATION':
-        return { color: '#E8621A', icon: '👤', label: 'Compartment violation' };
-      case 'HAZARD_REPORT':
-        return { color: '#F5A623', icon: '⚠️', label: 'Hazard' };
-      default:
-        return { color: '#7B8A9E', icon: '📌', label: 'Incident' };
+  // Center map on ready or region update
+  useEffect(() => {
+    if (isMapReady && region) {
+      const js = `centerMap(${region.latitude}, ${region.longitude}); true;`;
+      webViewRef.current?.injectJavaScript(js);
+    }
+  }, [isMapReady, region.latitude, region.longitude]);
+
+  // Update events inside Leaflet on maps ready
+  useEffect(() => {
+    if (isMapReady) {
+      const js = `loadEvents(${JSON.stringify(events)}); true;`;
+      webViewRef.current?.injectJavaScript(js);
+    }
+  }, [isMapReady, events]);
+
+  const handleMessage = (event) => {
+    try {
+      const data = JSON.parse(event.nativeEvent.data);
+      if (data.type === 'READY') {
+        setIsMapReady(true);
+      }
+    } catch (e) {
+      console.error('Failed to parse WebView message:', e);
     }
   };
 
@@ -116,6 +226,7 @@ export default function SafetyMapScreen() {
     const isSelected = selectedFilter === filterType;
     return (
       <TouchableOpacity
+        key={filterType}
         style={[styles.filterChip, isSelected && styles.filterChipActive]}
         onPress={() => setSelectedFilter(filterType)}
         activeOpacity={0.8}
@@ -124,23 +235,6 @@ export default function SafetyMapScreen() {
           {label}
         </Text>
       </TouchableOpacity>
-    );
-  };
-
-  const renderEventItem = ({ item }) => {
-    const config = getEventMarkerConfig(item.event_type);
-    return (
-      <View style={styles.eventCard}>
-        <View style={[styles.eventIconBg, { backgroundColor: config.color + '15' }]}>
-          <Text style={{ fontSize: 18 }}>{config.icon}</Text>
-        </View>
-        <View style={styles.eventInfo}>
-          <Text style={styles.eventTitle}>{config.label} - {item.alert_subtype.replace(/_/g, ' ')}</Text>
-          <Text style={styles.eventSub}>
-            {item.train_number ? `Train ${item.train_number}` : 'Station Area'} • {new Date(item.created_at).toLocaleDateString()}
-          </Text>
-        </View>
-      </View>
     );
   };
 
@@ -168,79 +262,21 @@ export default function SafetyMapScreen() {
         </ScrollView>
       </View>
 
-      {/* Main Map or Fallback Panel */}
+      {/* Main Map Panel */}
       <View style={styles.mapContainer}>
-        {MapView ? (
-          <>
-            <MapView
-              style={styles.map}
-              region={region}
-              onRegionChangeComplete={(r) => setRegion(r)}
-              showsUserLocation={true}
-              showsMyLocationButton={true}
-            >
-              {events.map((event) => {
-                const config = getEventMarkerConfig(event.event_type);
-                return (
-                  <Marker
-                    key={event.id}
-                    coordinate={{ latitude: Number(event.lat), longitude: Number(event.lng) }}
-                    title={config.label}
-                    description={event.alert_subtype.replace(/_/g, ' ')}
-                  >
-                    <HazardMarker eventType={event.event_type} />
-                    <Callout tooltip>
-                      <View style={styles.calloutBubble}>
-                        <Text style={styles.calloutTitle}>{config.label}</Text>
-                        <Text style={styles.calloutSub}>{event.alert_subtype.replace(/_/g, ' ')}</Text>
-                        {event.train_number ? (
-                          <Text style={styles.calloutDetail}>Train: {event.train_number}</Text>
-                        ) : null}
-                        <Text style={styles.calloutTime}>
-                          {new Date(event.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </Text>
-                      </View>
-                    </Callout>
-                  </Marker>
-                );
-              })}
-            </MapView>
+        <WebView
+          ref={webViewRef}
+          style={styles.map}
+          originWhitelist={['*']}
+          source={{ html: LEAFLET_HTML }}
+          onMessage={handleMessage}
+          javaScriptEnabled={true}
+          domStorageEnabled={true}
+        />
 
-            {loading && (
-              <View style={styles.mapLoader}>
-                <ActivityIndicator size="small" color="#E8621A" />
-              </View>
-            )}
-          </>
-        ) : (
-          /* Fallback Screen for Unsupported Environments (Web/Simulators without Google Maps) */
-          <View style={styles.fallbackContainer}>
-            <View style={styles.fallbackHeader}>
-              <Text style={styles.fallbackTitle}>Interactive Map Sandbox</Text>
-              <Text style={styles.fallbackSubtitle}>
-                Map visualizations require Google Maps SDK. Displaying list of active safety hotspots.
-              </Text>
-            </View>
-
-            {loading ? (
-              <View style={styles.centre}>
-                <ActivityIndicator size="large" color="#E8621A" />
-              </View>
-            ) : (
-              <FlatList
-                data={events}
-                keyExtractor={(item) => item.id}
-                renderItem={renderEventItem}
-                contentContainerStyle={styles.fallbackList}
-                ListEmptyComponent={
-                  <View style={styles.centre}>
-                    <Text style={styles.emptyIcon}>🛡️</Text>
-                    <Text style={styles.emptyTitle}>No active reports</Text>
-                    <Text style={styles.emptySubtitle}>No safety events match the selected category.</Text>
-                  </View>
-                }
-              />
-            )}
+        {loading && (
+          <View style={styles.mapLoader}>
+            <ActivityIndicator size="small" color="#E8621A" />
           </View>
         )}
       </View>

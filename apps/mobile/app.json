@@ -9,17 +9,9 @@
     "scheme": "mobile",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon",
-      "config": {
-        "googleMapsApiKey": "AIzaSyDepMTT8xULDbiSLa3cvOg5mEKHIXR0cQI"
-      }
+      "icon": "./assets/expo.icon"
     },
     "android": {
-      "config": {
-        "googleMaps": {
-          "apiKey": "AIzaSyDepMTT8xULDbiSLa3cvOg5mEKHIXR0cQI"
-        }
-      },
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
