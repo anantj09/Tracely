@@ -1,0 +1,37 @@
+{
+  "station_code": "CSTM",
+  "station_name": "Mumbai CST",
+  "total_platforms": 18,
+  "schematic_width": 1000,
+  "schematic_height": 600,
+  "platforms": [
+    { "number": "1",  "x": 20,  "y": 70,  "width": 440, "height": 32, "label": "Pf 1" },
+    { "number": "2",  "x": 20,  "y": 110, "width": 440, "height": 32, "label": "Pf 2" },
+    { "number": "3",  "x": 20,  "y": 150, "width": 440, "height": 32, "label": "Pf 3" },
+    { "number": "4",  "x": 20,  "y": 190, "width": 440, "height": 32, "label": "Pf 4" },
+    { "number": "5",  "x": 20,  "y": 230, "width": 440, "height": 32, "label": "Pf 5" },
+    { "number": "6",  "x": 20,  "y": 270, "width": 440, "height": 32, "label": "Pf 6" },
+    { "number": "7",  "x": 20,  "y": 310, "width": 440, "height": 32, "label": "Pf 7" },
+    { "number": "8",  "x": 20,  "y": 350, "width": 440, "height": 32, "label": "Pf 8" },
+    { "number": "9",  "x": 20,  "y": 390, "width": 440, "height": 32, "label": "Pf 9" },
+    { "number": "10", "x": 540, "y": 70,  "width": 440, "height": 32, "label": "Pf 10" },
+    { "number": "11", "x": 540, "y": 110, "width": 440, "height": 32, "label": "Pf 11" },
+    { "number": "12", "x": 540, "y": 150, "width": 440, "height": 32, "label": "Pf 12" },
+    { "number": "13", "x": 540, "y": 190, "width": 440, "height": 32, "label": "Pf 13" },
+    { "number": "14", "x": 540, "y": 230, "width": 440, "height": 32, "label": "Pf 14" },
+    { "number": "15", "x": 540, "y": 270, "width": 440, "height": 32, "label": "Pf 15" },
+    { "number": "16", "x": 540, "y": 310, "width": 440, "height": 32, "label": "Pf 16" },
+    { "number": "17", "x": 540, "y": 350, "width": 440, "height": 32, "label": "Pf 17" },
+    { "number": "18", "x": 540, "y": 390, "width": 440, "height": 32, "label": "Pf 18" }
+  ],
+  "concourse": { "x": 0, "y": 450, "width": 1000, "height": 60, "label": "Heritage Concourse", "fill": "#FFF3E0" },
+  "entry_gates": [
+    { "id": "main_gate",   "x": 200, "y": 570, "label": "Main Gate" },
+    { "id": "eastern_gate","x": 700, "y": 570, "label": "Eastern Entry" }
+  ],
+  "landmarks": [
+    { "id": "enquiry",    "x": 500, "y": 470, "label": "Enquiry", "icon": "ℹ️" },
+    { "id": "food_court", "x": 300, "y": 470, "label": "Food Court", "icon": "🍽️" },
+    { "id": "atm",        "x": 700, "y": 470, "label": "ATM Zone", "icon": "💳" }
+  ]
+}

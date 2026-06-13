@@ -1,0 +1,36 @@
+{
+  "station_code": "NDLS",
+  "station_name": "New Delhi Railway Station",
+  "total_platforms": 16,
+  "schematic_width": 1000,
+  "schematic_height": 600,
+  "platforms": [
+    { "number": "1",  "x": 20,  "y": 80,  "width": 460, "height": 36, "label": "Pf 1" },
+    { "number": "2",  "x": 20,  "y": 130, "width": 460, "height": 36, "label": "Pf 2" },
+    { "number": "3",  "x": 20,  "y": 180, "width": 460, "height": 36, "label": "Pf 3" },
+    { "number": "4",  "x": 20,  "y": 230, "width": 460, "height": 36, "label": "Pf 4" },
+    { "number": "5",  "x": 20,  "y": 280, "width": 460, "height": 36, "label": "Pf 5" },
+    { "number": "6",  "x": 20,  "y": 330, "width": 460, "height": 36, "label": "Pf 6" },
+    { "number": "7",  "x": 20,  "y": 380, "width": 460, "height": 36, "label": "Pf 7" },
+    { "number": "8",  "x": 20,  "y": 430, "width": 460, "height": 36, "label": "Pf 8" },
+    { "number": "9",  "x": 520, "y": 80,  "width": 460, "height": 36, "label": "Pf 9" },
+    { "number": "10", "x": 520, "y": 130, "width": 460, "height": 36, "label": "Pf 10" },
+    { "number": "11", "x": 520, "y": 180, "width": 460, "height": 36, "label": "Pf 11" },
+    { "number": "12", "x": 520, "y": 230, "width": 460, "height": 36, "label": "Pf 12" },
+    { "number": "13", "x": 520, "y": 280, "width": 460, "height": 36, "label": "Pf 13" },
+    { "number": "14", "x": 520, "y": 330, "width": 460, "height": 36, "label": "Pf 14" },
+    { "number": "15", "x": 520, "y": 380, "width": 460, "height": 36, "label": "Pf 15" },
+    { "number": "16", "x": 520, "y": 430, "width": 460, "height": 36, "label": "Pf 16" }
+  ],
+  "concourse": { "x": 0, "y": 490, "width": 1000, "height": 60, "label": "Main Concourse", "fill": "#E8F4FD" },
+  "entry_gates": [
+    { "id": "ajmeri",   "x": 150, "y": 570, "label": "Ajmeri Gate" },
+    { "id": "paharganj","x": 750, "y": 570, "label": "Paharganj Gate" }
+  ],
+  "landmarks": [
+    { "id": "enquiry",    "x": 500, "y": 510, "label": "Enquiry", "icon": "ℹ️" },
+    { "id": "cloak_room", "x": 80,  "y": 510, "label": "Cloak Room", "icon": "🧳" },
+    { "id": "auto_stand", "x": 200, "y": 570, "label": "Pre-paid Auto", "icon": "🛺" },
+    { "id": "atm",        "x": 450, "y": 510, "label": "SBI ATM", "icon": "💳" }
+  ]
+}

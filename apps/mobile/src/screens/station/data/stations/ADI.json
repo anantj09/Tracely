@@ -1,0 +1,33 @@
+{
+  "station_code": "ADI",
+  "station_name": "Ahmedabad Junction",
+  "total_platforms": 13,
+  "schematic_width": 1000,
+  "schematic_height": 600,
+  "platforms": [
+    { "number": "1",  "x": 20, "y": 55,  "width": 960, "height": 28, "label": "Pf 1" },
+    { "number": "2",  "x": 20, "y": 90,  "width": 960, "height": 28, "label": "Pf 2" },
+    { "number": "3",  "x": 20, "y": 125, "width": 960, "height": 28, "label": "Pf 3" },
+    { "number": "4",  "x": 20, "y": 160, "width": 960, "height": 28, "label": "Pf 4" },
+    { "number": "5",  "x": 20, "y": 195, "width": 960, "height": 28, "label": "Pf 5" },
+    { "number": "6",  "x": 20, "y": 230, "width": 960, "height": 28, "label": "Pf 6" },
+    { "number": "7",  "x": 20, "y": 265, "width": 960, "height": 28, "label": "Pf 7" },
+    { "number": "8",  "x": 20, "y": 300, "width": 960, "height": 28, "label": "Pf 8" },
+    { "number": "9",  "x": 20, "y": 335, "width": 960, "height": 28, "label": "Pf 9" },
+    { "number": "10", "x": 20, "y": 370, "width": 960, "height": 28, "label": "Pf 10" },
+    { "number": "11", "x": 20, "y": 405, "width": 960, "height": 28, "label": "Pf 11" },
+    { "number": "12", "x": 20, "y": 440, "width": 960, "height": 28, "label": "Pf 12" },
+    { "number": "13", "x": 20, "y": 475, "width": 960, "height": 28, "label": "Pf 13" }
+  ],
+  "concourse": { "x": 0, "y": 510, "width": 1000, "height": 55, "label": "Main Concourse", "fill": "#F3E5F5" },
+  "entry_gates": [
+    { "id": "main_gate", "x": 300, "y": 575, "label": "Main Entry" },
+    { "id": "south_gate","x": 700, "y": 575, "label": "South Gate" }
+  ],
+  "landmarks": [
+    { "id": "enquiry",    "x": 500, "y": 530, "label": "Enquiry", "icon": "ℹ️" },
+    { "id": "waiting",    "x": 150, "y": 530, "label": "Waiting Room", "icon": "🪑" },
+    { "id": "auto_stand", "x": 300, "y": 575, "label": "Pre-paid Auto", "icon": "🛺" },
+    { "id": "atm",        "x": 800, "y": 530, "label": "ATM", "icon": "💳" }
+  ]
+}

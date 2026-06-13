@@ -1,0 +1,30 @@
+{
+  "station_code": "SBC",
+  "station_name": "Bengaluru City Junction",
+  "total_platforms": 10,
+  "schematic_width": 1000,
+  "schematic_height": 600,
+  "platforms": [
+    { "number": "1",  "x": 20,  "y": 80,  "width": 440, "height": 40, "label": "Pf 1" },
+    { "number": "2",  "x": 20,  "y": 140, "width": 440, "height": 40, "label": "Pf 2" },
+    { "number": "3",  "x": 20,  "y": 200, "width": 440, "height": 40, "label": "Pf 3" },
+    { "number": "4",  "x": 20,  "y": 260, "width": 440, "height": 40, "label": "Pf 4" },
+    { "number": "5",  "x": 20,  "y": 320, "width": 440, "height": 40, "label": "Pf 5" },
+    { "number": "6",  "x": 540, "y": 80,  "width": 440, "height": 40, "label": "Pf 6" },
+    { "number": "7",  "x": 540, "y": 140, "width": 440, "height": 40, "label": "Pf 7" },
+    { "number": "8",  "x": 540, "y": 200, "width": 440, "height": 40, "label": "Pf 8" },
+    { "number": "9",  "x": 540, "y": 260, "width": 440, "height": 40, "label": "Pf 9" },
+    { "number": "10", "x": 540, "y": 320, "width": 440, "height": 40, "label": "Pf 10" }
+  ],
+  "concourse": { "x": 0, "y": 400, "width": 1000, "height": 70, "label": "Concourse", "fill": "#E8F5E9" },
+  "entry_gates": [
+    { "id": "north_gate", "x": 200, "y": 570, "label": "North Entry (Majestic)" },
+    { "id": "south_gate", "x": 700, "y": 570, "label": "South Entry" }
+  ],
+  "landmarks": [
+    { "id": "enquiry",    "x": 490, "y": 430, "label": "Enquiry", "icon": "ℹ️" },
+    { "id": "food_court", "x": 200, "y": 430, "label": "Food Court", "icon": "🍽️" },
+    { "id": "medical",    "x": 800, "y": 430, "label": "Medical", "icon": "➕" },
+    { "id": "auto_stand", "x": 350, "y": 570, "label": "Pre-paid Auto", "icon": "🛺" }
+  ]
+}

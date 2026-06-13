@@ -1,0 +1,10 @@
+{
+  "name": "tracely-workspace",
+  "version": "1.0.0",
+  "scripts": {
+    "install-all": "node install-all.js"
+  },
+  "dependencies": {
+    "multer": "^2.1.1"
+  }
+}
