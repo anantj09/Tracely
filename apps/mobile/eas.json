@@ -1,0 +1,34 @@
+{
+  "cli": {
+    "version": ">= 9.0.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://tracely-api.onrender.com/api",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://sjjzzahcqmxksruzfpfo.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqanp6YWhjcW14a3NydXpmcGZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5NzM5OTgsImV4cCI6MjA5NjU0OTk5OH0.a41Mq6zjm21HNpWICDaTC822TR91MYmLardc56KUkj8",
+        "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY": "AIzaSyDepMTT8xULDbiSLa3cvOg5mEKHIXR0cQI"
+      }
+    },
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://tracely-api.onrender.com/api",
+        "EXPO_PUBLIC_SUPABASE_URL": "https://sjjzzahcqmxksruzfpfo.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNqanp6YWhjcW14a3NydXpmcGZvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5NzM5OTgsImV4cCI6MjA5NjU0OTk5OH0.a41Mq6zjm21HNpWICDaTC822TR91MYmLardc56KUkj8",
+        "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY": "AIzaSyDepMTT8xULDbiSLa3cvOg5mEKHIXR0cQI"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

@@ -2,7 +2,7 @@
   "main": "index.js",
   "expo": {
     "name": "mobile",
-    "slug": "mobile",
+    "slug": "tracely",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -18,7 +18,8 @@
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anantsteam.tracely"
     },
     "web": {
       "output": "single",
@@ -42,6 +43,12 @@
     "experiments": {
       "typedRoutes": false,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "022cab7d-7ab7-48e2-bad6-d5f062cdb341"
+      }
+    },
+    "owner": "anants-team"
   }
 }

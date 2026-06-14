@@ -1,145 +1,311 @@
-# RailSaathi
+# 🚆 Tracely — India's Unified Railway Companion
 
-RailSaathi is India's unified railway passenger platform, designed to provide passengers with a seamless, comprehensive travel experience. This repository contains the mobile application (React Native Expo), the government admin web dashboard (React + Vite), and the unified API backend (Node.js + Express).
+> A full-stack monorepo platform serving **8+ billion annual Indian Railway passengers** with a unified mobile app and government admin dashboard.
 
-## Deployment Links (Placeholders)
-- **Production API (Render)**: [https://railsaathi-api.onrender.com](https://railsaathi-api.onrender.com)
-- **Admin Dashboard (Vercel)**: [https://railsaathi-admin.vercel.app](https://railsaathi-admin.vercel.app)
+[![Dashboard](https://img.shields.io/badge/Dashboard-Live-blue?style=for-the-badge)](https://tracely-admin.vercel.app/)
+[![API](https://img.shields.io/badge/API-Live-green?style=for-the-badge)](https://tracely-api.onrender.com/api/health)
+[![Mobile](https://img.shields.io/badge/Mobile-Expo_APK-orange?style=for-the-badge)](#mobile-app)
 
-## Repository Structure
+---
 
-The project is structured as a monorepo:
+## 🌐 Live Deployment Links
+
+| Platform | URL | Status |
+|----------|-----|--------|
+| 🖥️ **Admin Dashboard** | [https://tracely-admin.vercel.app/](https://tracely-admin.vercel.app/) | ✅ Live on Vercel |
+| ⚙️ **Backend API** | [https://tracely-api.onrender.com/api/health](https://tracely-api.onrender.com/api/health) | ✅ Live on Render |
+| 📱 **Mobile App** | Android APK via EAS Build | ✅ Distributed via Expo |
+
+---
+
+## 📐 Repository Structure
+
+The project is structured as a **monorepo** with clear separation of concerns:
+
 ```text
-railsaathi/
+tracely/
 ├── apps/
-│   ├── mobile/              # React Native (Expo) - Mobile App
-│   └── dashboard/           # React + Vite - Government Web Dashboard
+│   ├── mobile/              # React Native (Expo SDK 56) — Passenger Mobile App
+│   │   ├── src/screens/     # 6 feature modules (auth, home, tatkal, complaints, safety, station)
+│   │   ├── src/context/     # TracelyContext.js — global state management
+│   │   └── src/services/    # API client, Supabase client, feature services
+│   └── dashboard/           # React 19 + Vite 8 — Government Admin Dashboard
+│       ├── src/pages/       # 10 dashboard pages (Overview, Maps, Safety, Demand, etc.)
+│       └── src/components/  # Reusable UI components (Sidebar, KPICard, Maps)
 ├── services/
-│   └── api/                 # Node.js + Express - Backend API Service
+│   └── api/                 # Node.js 18 + Express — Backend REST API
+│       ├── src/routes/      # 13 route files, 40+ endpoints
+│       ├── src/middleware/   # JWT auth, error handling, timeout
+│       ├── src/services/    # Business logic (demand, safety, twilio)
+│       └── src/jobs/        # Scheduled jobs (tatkal fire job)
 ├── supabase/
-│   └── migrations/          # Supabase SQL Migrations
-├── scripts/                 # Utility and Seeding Scripts
-└── docs/                    # Architecture and Design System documentation
+│   └── migrations/          # 14 SQL migration files — schema, RLS, triggers
+├── scripts/                 # 6 seed scripts for demo data
+│   ├── seed.js              # Core users, journeys, admin accounts
+│   ├── seed-tatkal.js       # Tatkal requests + surrenders
+│   ├── seed-complaints.js   # 300 complaints across 30 stations
+│   ├── seed-safety.js       # 100 safety events across 20 stations
+│   ├── seed-stations.js     # 50 station coordinates
+│   └── seed-amenities.js    # 42 amenities, 17 vendors, 200 intents
+├── docs/                    # Architecture docs, member progress, design specs
+├── install-all.js           # One-command dependency installer for all workspaces
+└── package.json             # Root workspace configuration
 ```
 
-## Getting Started
+---
 
-This section explains how to set up and run each part of the monorepo locally.
+## 🏗️ System Architecture
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    CLIENT LAYER                          │
+│  ┌──────────────────┐    ┌──────────────────────────┐   │
+│  │  📱 Mobile App    │    │  🖥️ Admin Dashboard       │   │
+│  │  React Native     │    │  React 19 + Vite 8       │   │
+│  │  Expo SDK 56      │    │  Leaflet + Recharts      │   │
+│  └────────┬─────────┘    └───────────┬──────────────┘   │
+│           └──────────┬───────────────┘                   │
+│                      ▼                                   │
+│  ┌──────────────────────────────────────────────────┐   │
+│  │              API GATEWAY (Express)                │   │
+│  │  Helmet · CORS · JWT Auth · 8s Timeout · Morgan  │   │
+│  │  13 route files · 40+ endpoints                   │   │
+│  └──────────────────────┬───────────────────────────┘   │
+│                         ▼                                │
+│  ┌────────────┐  ┌─────────────┐  ┌───────────────┐    │
+│  │ Supabase   │  │ Supabase    │  │ Twilio SMS    │    │
+│  │ PostgreSQL │  │ Storage     │  │ (SOS Alerts)  │    │
+│  │ + RLS      │  │ (Photos,    │  └───────────────┘    │
+│  │ + Realtime │  │  Audio)     │                        │
+│  └────────────┘  └─────────────┘                        │
+└─────────────────────────────────────────────────────────┘
+```
+
+---
+
+## ⚡ Five Feature Pillars
+
+### 🎫 1. Tatkal Verified Booking Ecosystem
+- Pre-fill wizard with Account Holder Mandate enforcement
+- Zero-drift countdown timer to booking windows (8/10/11 AM IST)
+- Surrender marketplace for ticket re-listing
+- Overlap lock preventing double-booking (DB constraint)
+- Background fire job for automated booking execution
+
+### 📝 2. Smart Grievance Management
+- 8-category complaint filing (2×4 icon grid)
+- Photo evidence upload to Supabase Storage
+- Active journey auto-population for train/coach details
+- Visual status timeline (Filed → Acknowledged → In Progress → Resolved)
+- 72-hour reopen window with 20-char minimum justification
+- Safety auto-escalation for security-type complaints
+- **Dashboard:** Leaflet geo-heatmap with 300+ plotted complaints
+
+### 🚨 3. Zero-Latency Safety & SOS
+- Single-tap SOS panic button (< 500ms server response)
+- 60-second ambient audio recording with Supabase upload
+- Compartment alert for suspicious persons
+- Hazard reporting with geo-tagged photos
+- Leaflet safety hotspot map (🚨 SOS · 👤 Compartment · ⚠️ Hazard)
+- Trusted contacts with Twilio SMS notification
+- **Dashboard:** RPF live command center with event resolution workflow
+
+### 🏪 4. Station Intelligence & Demand Forecasting
+- Travel intent crowdsourcing for demand prediction
+- Traffic-light crowding score (Haversine distance formula)
+- SVG station schematic maps (NDLS, CSTM, ADI, SBC)
+- 42+ amenity directory with real-time status
+- Vendor verification with star ratings and reviews
+- Geo-fenced check-in (500m Haversine radius)
+- **Dashboard:** Recharts demand forecast visualizations
+
+### 📊 5. Government Admin Dashboard
+- 4 real-time KPI cards (Supabase Realtime)
+- Leaflet complaint map (train-mode + station-mode views)
+- Live complaint density heatmap
+- Safety event table with status badges
+- RPF command dashboard with priority queue
+- Demand forecast charts (route-wise trends)
+- Station management + Tatkal monitoring
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology | Version |
+|-------|-----------|---------|
+| **Mobile** | React Native | 0.85.3 |
+| | Expo SDK | 56 |
+| | React Navigation | 7 |
+| | Leaflet (via WebView) | 1.9.4 |
+| **Dashboard** | React | 19.2.6 |
+| | Vite | 8.0.12 |
+| | React-Leaflet | 5.0.0 |
+| | Recharts | 3.8.1 |
+| **Backend** | Node.js | 18 |
+| | Express | 5 |
+| **Database** | Supabase (PostgreSQL) | 15 |
+| **Auth** | Supabase Auth (Phone OTP) | — |
+| **Storage** | Supabase Storage | — |
+| **Realtime** | Supabase Realtime | — |
+| **SMS** | Twilio | — |
+| **Hosting** | Vercel (Dashboard) + Render (API) + EAS (Mobile) | — |
+
+---
+
+## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v18 or higher recommended)
-- npm (v9 or higher recommended)
+- **Node.js** v18 or higher
+- **npm** v9 or higher
+- **Expo CLI** (`npm install -g expo-cli`)
 
-### Setup & Installation
+### One-Command Install
 
-1. **Clone the Repository:**
-   ```bash
-   git clone https://github.com/your-username/railsaathi.git
-   cd RailSaathi
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/your-username/tracely.git
+cd tracely
 
-2. **Unified API Backend Setup:**
-   ```bash
-   cd services/api
-   npm install
-   cp .env.example .env
-   ```
-   Configure `.env` with the following variables:
-   ```env
-   PORT=3000
-   SUPABASE_URL=https://your-project.supabase.co
-   SUPABASE_SERVICE_KEY=your-service-role-key
-   SUPABASE_JWT_SECRET=your-jwt-secret
-   RENDER_EXTERNAL_URL=https://railsaathi-z057.onrender.com
-   NTES_API_KEY=                    (optional)
-   ```
-   Start the backend development server:
-   ```bash
-   npm run dev
-   ```
-   The backend API will run at `http://localhost:3000/api`. You can test it by requesting the health check:
-   ```bash
-   curl http://localhost:3000/api/health
-   ```
+# Install ALL dependencies (root + dashboard + mobile + api)
+npm run install-all
+```
 
-3. **Admin Dashboard Setup:**
-   ```bash
-   cd apps/dashboard
-   npm install
-   npm run dev
-   ```
-   The dashboard website will run locally at `http://localhost:5173`.
+This runs `install-all.js` which automatically traverses and installs dependencies in all 4 workspaces.
 
-4. **Mobile App Setup:**
-   ```bash
-   cd apps/mobile
-   npm install
-   npx expo start --tunnel
-   ```
-   Scan the generated QR code using the Expo Go app on a real phone to load the mobile interface.
+### Start Services
 
----
+```bash
+# 1. Backend API (http://localhost:3000)
+cd services/api
+cp .env.example .env   # Configure Supabase credentials
+npm run dev
 
-## Seeding Demo Data
+# 2. Admin Dashboard (http://localhost:5173)
+cd apps/dashboard
+npm run dev
 
-We provide seeding scripts to populate Supabase with synthetic data for realistic charts, maps, and active states during development/demos.
+# 3. Mobile App (Expo Go)
+cd apps/mobile
+npx expo start --tunnel
+# Scan QR code with Expo Go app
+```
 
-1. **General Data Seeding:**
-   This script inserts users, journeys, complaints, safety incidents, tatkal requests, and travel intents.
-   ```bash
-   # From the root directory:
-   NODE_PATH=services/api/node_modules node scripts/seed.js
-   ```
+### Environment Variables
 
-2. **Demo User Seeding:**
-   This script inserts the specific demo user (Arjun Sharma) along with an active trip, complaints history, and travel forecasts.
-   ```bash
-   # From the root directory:
-   NODE_PATH=services/api/node_modules node scripts/seed-demo-user.js
-   ```
+#### Backend (`services/api/.env`)
+```env
+PORT=3000
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_KEY=your-service-role-key
+SUPABASE_JWT_SECRET=your-jwt-secret
+RENDER_EXTERNAL_URL=https://tracely-api.onrender.com
+```
+
+#### Dashboard (`apps/dashboard/.env`)
+```env
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_API_BASE_URL=http://localhost:3000/api
+```
+
+#### Mobile (`apps/mobile/.env`)
+```env
+EXPO_PUBLIC_API_BASE_URL=http://your-ip:3000/api
+EXPO_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
 
 ---
 
-## Documentation
+## 🌱 Seeding Demo Data
 
-For full details on development workflows, constraints, and UI designs, refer to the documentation in `docs/`:
-- [AGENTS.md](file:///Users/sayantanmandal/Desktop/RailSaathi/docs/AGENTS.md) — Coding Rules
-- [ARCHITECTURE.md](file:///Users/sayantanmandal/Desktop/RailSaathi/docs/ARCHITECTURE.md) — Repo Structure and API Contracts
-- [PRD.md](file:///Users/sayantanmandal/Desktop/RailSaathi/docs/PRD.md) — Product Requirements Document
-- [DESIGN.md](file:///Users/sayantanmandal/Desktop/RailSaathi/docs/DESIGN.md) — Color Palette, Typography & Visual Specifications
-- [plan.md](file:///Users/sayantanmandal/Desktop/RailSaathi/docs/plan.md) — Phased Implementation Plan
-- [PROGRESS.md](file:///Users/sayantanmandal/Desktop/RailSaathi/docs/PROGRESS.md) — Context Tracking & Milestone Progress
-
----
-
-## Demo Day Setup
-
-Render.com free tier services spin down after 15 minutes of inactivity. To prevent API cold starts during the demo:
-1. Go to [https://cron-job.org](https://cron-job.org)
-2. Create a free account.
-3. Add a new cron job:
-   - **URL**: `https://railsaathi-api.onrender.com/api/health`
-   - **Interval**: Every 10 minutes
-   - **Method**: GET
-   - **Status**: Enabled
+```bash
+# From the root directory — set NODE_PATH to share API dependencies
+NODE_PATH=services/api/node_modules node scripts/seed.js           # Core users, journeys, admins
+NODE_PATH=services/api/node_modules node scripts/seed-tatkal.js    # 10 tatkal requests + 5 surrenders
+NODE_PATH=services/api/node_modules node scripts/seed-stations.js  # 50 station coordinates
+NODE_PATH=services/api/node_modules node scripts/seed-complaints.js # 300 complaints
+NODE_PATH=services/api/node_modules node scripts/seed-safety.js    # 100 safety events
+NODE_PATH=services/api/node_modules node scripts/seed-amenities.js # 42 amenities, 17 vendors, 200 intents
+```
 
 ---
 
-## Demo Credentials
+## 🔐 Security
 
-Use these credentials to log in and demo the application:
-- **Demo Phone**: `9999999999`
-- **Demo OTP** (if using mock auth): `123456`
-- **Admin Dashboard URL**: [https://railsaathi-admin.vercel.app](https://railsaathi-admin.vercel.app)
-- **API URL**: [https://railsaathi-api.onrender.com](https://railsaathi-api.onrender.com)
+- **Supabase Auth** — Phone OTP authentication (no passwords)
+- **JWT (HS256)** — Stateless tokens with 1-hour expiry + auto-refresh
+- **Row-Level Security** — PostgreSQL RLS on every table
+- **Helmet.js** — Security headers (CSP, HSTS, X-Frame-Options)
+- **Privacy by Design** — Public APIs strip all PII; `maskedInitials()` anonymizes reporters
+- **8s Request Timeout** — Prevents long-running query abuse
 
 ---
 
-## Team Structure & Ownership
+## 🗄️ Database Schema
 
-RailSaathi is built by a team of 5 members with the following ownership split:
-- **Member 1 (Spine / Platform Admin)**: Owns the repository shell, global authentication flow (Firebase + local custom JWT), user profiles, PNR journey aggregations, unified React Native shell, admin dashboard overview, real-time safety/SOS table and map views, station details table, and travel demand charts.
-- **Member 2 (Tatkal Assist)**: Owns the automated passenger details autofill, countdown alerts, and speed-booking optimizations.
-- **Member 3 (Complaints)**: Owns the multi-category complaint logging, image uploading, and passenger-facing grievance history screens.
-- **Member 4 (Safety & SOS)**: Owns the zero-latency SOS panic button, live location sharing, and security status dashboard.
-- **Member 5 (Station Guide)**: Owns the station status checks, platform layout views, and real-time station amenity details.
+14 migration files defining 15+ tables across 5 feature modules:
+
+| Migration | Tables | Owner |
+|-----------|--------|-------|
+| `001_core_schema.sql` | users, journeys, admin_users | M1 |
+| `002_tatkal.sql` | tatkal_requests, tatkal_surrenders | M2 |
+| `0022_overlap_lock.sql` | tatkal_journey_locks | M2 |
+| `003_complaints.sql` | complaints, complaint_timeline, station_coordinates | M3 |
+| `004_safety.sql` | safety_events (+ Realtime) | M4 |
+| `005_amenities.sql` | amenities, vendors, vendor_reviews, travel_intents, station_checkins | M5 |
+
+---
+
+## 📦 Deployment Guide
+
+### Dashboard → Vercel
+1. Push to GitHub
+2. Import repo in Vercel → Root Directory: `apps/dashboard`
+3. Framework: **Vite** · Build: `npm run build` · Output: `dist`
+4. Add env vars: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_API_BASE_URL`
+
+### API → Render
+1. Create Web Service → Root Directory: `services/api`
+2. Build: `npm install` · Start: `npm start`
+3. Add env vars: `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `SUPABASE_JWT_SECRET`
+4. Set `RENDER_EXTERNAL_URL` for keep-alive self-ping
+
+### Mobile → EAS Build
+```bash
+cd apps/mobile
+eas build --platform android --profile preview
+# Downloads APK for distribution
+```
+
+---
+
+## 🎯 Demo Credentials
+
+| Field | Value |
+|-------|-------|
+| Demo Phone | `9999999999` |
+| Demo OTP | `123456` |
+| Admin Dashboard | [https://tracely-admin.vercel.app/](https://tracely-admin.vercel.app/) |
+| API Health | [https://tracely-api.onrender.com/api/health](https://tracely-api.onrender.com/api/health) |
+
+---
+
+## 👥 Team Structure
+
+| Member | Domain | Ownership |
+|--------|--------|-----------|
+| **Member 1** | Spine & Platform Admin | Auth, profiles, journeys, admin dashboard, PNR, React Native shell |
+| **Member 2** | Tatkal Assist | Pre-fill, countdown, surrender marketplace, booking automation |
+| **Member 3** | Smart Complaints | Multi-category filing, photo upload, geo-heatmap, timeline |
+| **Member 4** | Safety & SOS | Panic button, audio recording, RPF dashboard, Leaflet safety map |
+| **Member 5** | Station Intelligence | Amenities, vendors, demand forecasting, schematics, check-in |
+
+---
+
+## 📄 License
+
+Built for **FarAway 2026 — National Railway Innovation Challenge**
+
+*"8 billion journeys. One companion. Tracely."*
