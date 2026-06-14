@@ -4,7 +4,7 @@
 
 [![Dashboard](https://img.shields.io/badge/Dashboard-Live-blue?style=for-the-badge)](https://tracely-admin.vercel.app/)
 [![API](https://img.shields.io/badge/API-Live-green?style=for-the-badge)](https://tracely-api.onrender.com/api/health)
-[![Mobile](https://img.shields.io/badge/Mobile-Expo_APK-orange?style=for-the-badge)](#mobile-app)
+[![Mobile](https://img.shields.io/badge/Mobile-Live-orange?style=for-the-badge)](https://tracely--fotbb0iv1f.expo.app)
 
 ---
 
@@ -14,17 +14,8 @@
 |----------|-----|--------|
 | 🖥️ **Admin Dashboard** | [https://tracely-admin.vercel.app/](https://tracely-admin.vercel.app/) | ✅ Live on Vercel |
 | ⚙️ **Backend API** | [https://tracely-api.onrender.com/api/health](https://tracely-api.onrender.com/api/health) | ✅ Live on Render |
-| 📱 **Mobile App** | [Download APK](https://expo.dev/accounts/anants-team/projects/tracely/builds/70b56a6f-6a4e-4ebd-a349-17c6b88f281c) | ✅ Distributed via Expo |
-
-### 📱 Download Mobile App (Android APK)
-
-Scan the QR code below or [click here](https://expo.dev/accounts/anants-team/projects/tracely/builds/70b56a6f-6a4e-4ebd-a349-17c6b88f281c) to download the Tracely APK:
-
-<p align="center">
-  <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https%3A%2F%2Fexpo.dev%2Faccounts%2Fanants-team%2Fprojects%2Ftracely%2Fbuilds%2F70b56a6f-6a4e-4ebd-a349-17c6b88f281c" alt="Tracely APK QR Code" width="250"/>
-  <br/>
-  <em>Scan to download Tracely APK</em>
-</p>
+| 📱 **Mobile App (Web/PWA)** | [https://tracely--fotbb0iv1f.expo.app](https://tracely--fotbb0iv1f.expo.app) | ✅ Live on Expo Hosting |
+<!-- | 🤖 **Mobile App (Android APK)** | [Download APK](https://expo.dev/accounts/anants-team/projects/tracely/builds/70b56a6f-6a4e-4ebd-a349-17c6b88f281c) | ✅ Distributed via Expo | -->
 
 ---
 
