@@ -37,3 +37,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.swp
+
+# Local docs
+docs/
+

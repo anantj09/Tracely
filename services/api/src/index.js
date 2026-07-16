@@ -126,7 +126,7 @@ app.listen(PORT, () => {
   console.log(`Tracely API running on port ${PORT}`);
 });
 
-// DEPLOYMENT NOTE: Set RENDER_EXTERNAL_URL=https://tracely-z057.onrender.com in Render env vars
+// DEPLOYMENT NOTE: Set RENDER_EXTERNAL_URL=https://tracely-api-3y0u.onrender.com in Render env vars
 // This enables the keep-alive ping to prevent the free tier from sleeping before the demo.
 const RENDER_URL = process.env.RENDER_EXTERNAL_URL;
 if (RENDER_URL) {

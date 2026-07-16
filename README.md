@@ -3,7 +3,7 @@
 > A full-stack monorepo platform serving **8+ billion annual Indian Railway passengers** with a unified mobile app and government admin dashboard.
 
 [![Dashboard](https://img.shields.io/badge/Dashboard-Live-blue?style=for-the-badge)](https://tracely-admin.vercel.app/)
-[![API](https://img.shields.io/badge/API-Live-green?style=for-the-badge)](https://tracely-api.onrender.com/api/health)
+[![API](https://img.shields.io/badge/API-Live-green?style=for-the-badge)](https://tracely-api-3y0u.onrender.com/api/health)
 [![Mobile](https://img.shields.io/badge/Mobile-Live-orange?style=for-the-badge)](https://tracely--fotbb0iv1f.expo.app)
 
 ---
@@ -13,7 +13,7 @@
 | Platform | URL | Status |
 |----------|-----|--------|
 | 🖥️ **Admin Dashboard** | [https://tracely-admin.vercel.app/](https://tracely-admin.vercel.app/) | ✅ Live on Vercel |
-| ⚙️ **Backend API** | [https://tracely-api.onrender.com/api/health](https://tracely-api.onrender.com/api/health) | ✅ Live on Render |
+| ⚙️ **Backend API** | [https://tracely-api-3y0u.onrender.com/api/health](https://tracely-api-3y0u.onrender.com/api/health) | ✅ Live on Render |
 | 📱 **Mobile App (Web/PWA)** | [https://tracely--fotbb0iv1f.expo.app](https://tracely--fotbb0iv1f.expo.app) | ✅ Live on Expo Hosting |
 <!-- | 🤖 **Mobile App (Android APK)** | [Download APK](https://expo.dev/accounts/anants-team/projects/tracely/builds/70b56a6f-6a4e-4ebd-a349-17c6b88f281c) | ✅ Distributed via Expo | -->
 
@@ -200,7 +200,7 @@ PORT=3000
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_KEY=your-service-role-key
 SUPABASE_JWT_SECRET=your-jwt-secret
-RENDER_EXTERNAL_URL=https://tracely-api.onrender.com
+RENDER_EXTERNAL_URL=https://tracely-api-3y0u.onrender.com
 ```
 
 #### Dashboard (`apps/dashboard/.env`)
@@ -289,7 +289,7 @@ eas build --platform android --profile preview
 | Demo Phone | `9999999999` |
 | Demo OTP | `123456` |
 | Admin Dashboard | [https://tracely-admin.vercel.app/](https://tracely-admin.vercel.app/) |
-| API Health | [https://tracely-api.onrender.com/api/health](https://tracely-api.onrender.com/api/health) |
+| API Health | [https://tracely-api-3y0u.onrender.com/api/health](https://tracely-api-3y0u.onrender.com/api/health) |
 
 ---
 
