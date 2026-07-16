@@ -41,3 +41,14 @@ yarn-error.log*
 # Local docs
 docs/
 
+# Local presentation documents
+TRACELY - India's Unified Railway Companion.pdf
+TRACELY - Improved Presentation.pptx
+
+# Local scratch directory
+scratch/
+
+# Local progress logs
+progress.md
+
+
